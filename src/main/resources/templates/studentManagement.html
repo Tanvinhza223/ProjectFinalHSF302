@@ -1,0 +1,1643 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stellar Student Management | Cosmic Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cosmic-purple: #8B5CF6;
+            --nebula-blue: #6366F1;
+            --stardust-pink: #EC4899;
+            --galaxy-teal: #06D6A0;
+            --supernova-orange: #F59E0B;
+            --black-hole: #0F0F23;
+            --deep-space: #1E1B2E;
+            --starry-night: #2A2640;
+            --milky-way: rgba(255, 255, 255, 0.1);
+            --comet-tail: rgba(255, 255, 255, 0.8);
+            --aurora-green: #00FF9D;
+            --aurora-blue: #00D4FF;
+            --crystal-white: rgba(255, 255, 255, 0.95);
+            --glass-bg: rgba(255, 255, 255, 0.08);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --neon-glow: 0 0 20px, 0 0 40px, 0 0 60px;
+            --transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Arial', sans-serif;
+        }
+
+        body {
+            background:
+                    radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.15) 0%, transparent 50%),
+                    radial-gradient(ellipse at 80% 20%, rgba(236, 72, 153, 0.1) 0%, transparent 50%),
+                    radial-gradient(ellipse at 40% 80%, rgba(6, 214, 160, 0.08) 0%, transparent 50%),
+                    linear-gradient(135deg, var(--black-hole) 0%, var(--deep-space) 50%, var(--starry-night) 100%);
+            color: var(--crystal-white);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Cosmic Background */
+        .cosmic-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -3;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 8s infinite;
+        }
+
+        .star:nth-child(1) { top: 10%; left: 20%; width: 2px; height: 2px; animation-delay: 0s; }
+        .star:nth-child(2) { top: 80%; left: 70%; width: 3px; height: 3px; animation-delay: 1s; }
+        .star:nth-child(3) { top: 40%; left: 40%; width: 1px; height: 1px; animation-delay: 2s; }
+        .star:nth-child(4) { top: 60%; left: 10%; width: 2px; height: 2px; animation-delay: 3s; }
+        .star:nth-child(5) { top: 20%; left: 80%; width: 3px; height: 3px; animation-delay: 4s; }
+
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--comet-tail));
+            transform: rotate(-45deg);
+            animation: shooting 15s infinite;
+        }
+
+        .shooting-star:nth-child(1) { top: 20%; left: -100px; animation-delay: 0s; }
+        .shooting-star:nth-child(2) { top: 40%; left: -100px; animation-delay: 7s; }
+        .shooting-star:nth-child(3) { top: 60%; left: -100px; animation-delay: 14s; }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.4;
+        }
+
+        .nebula-1 {
+            width: 500px;
+            height: 500px;
+            top: -200px;
+            right: -200px;
+            background: var(--cosmic-purple);
+            animation: float 25s ease-in-out infinite;
+        }
+
+        .nebula-2 {
+            width: 600px;
+            height: 600px;
+            bottom: -250px;
+            left: -250px;
+            background: var(--stardust-pink);
+            animation: float 30s ease-in-out infinite reverse;
+        }
+
+        .aurora {
+            position: absolute;
+            width: 100%;
+            height: 300px;
+            top: 0;
+            left: 0;
+            background: linear-gradient(180deg,
+            rgba(0, 255, 157, 0.1) 0%,
+            rgba(0, 212, 255, 0.05) 50%,
+            transparent 100%);
+            filter: blur(20px);
+            animation: auroraFlow 20s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        @keyframes shooting {
+            0% { transform: translateX(0) translateY(0) rotate(-45deg); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateX(100vw) translateY(100vh) rotate(-45deg); opacity: 0; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-40px) rotate(180deg); }
+        }
+
+        @keyframes auroraFlow {
+            0%, 100% { opacity: 0.3; transform: translateX(0); }
+            50% { opacity: 0.7; transform: translateX(50px); }
+        }
+
+        /* Rocket Launch Animation */
+        .rocket-launch-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+
+        .rocket-container {
+            position: relative;
+            width: 200px;
+            height: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .rocket {
+            width: 80px;
+            height: 150px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa726, #ffee58);
+            border-radius: 40% 40% 20% 20%;
+            position: relative;
+            animation: launchRocket 3s ease-in-out forwards;
+            transform-origin: center bottom;
+            box-shadow: 0 0 50px rgba(255, 107, 107, 0.8);
+        }
+
+        .rocket::before {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff5722, #ff9800);
+            border-radius: 50%;
+            animation: rocketFire 3s ease-in-out forwards;
+        }
+
+        .rocket-window {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 30px;
+            background: linear-gradient(45deg, #4fc3f7, #29b6f6);
+            border-radius: 50%;
+            border: 2px solid #01579b;
+        }
+
+        .rocket-fins {
+            position: absolute;
+            bottom: -20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .fin {
+            width: 20px;
+            height: 40px;
+            background: linear-gradient(45deg, #ff6b6b, #ffa726);
+            border-radius: 10px 10px 0 0;
+        }
+
+        .fin.left {
+            transform: rotate(-30deg);
+        }
+
+        .fin.right {
+            transform: rotate(30deg);
+        }
+
+        .launch-text {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 2rem;
+            text-align: center;
+            text-shadow: 0 0 20px #00ff9d;
+            animation: pulseText 1.5s infinite;
+        }
+
+        .stars-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .launch-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 1s infinite;
+        }
+
+        @keyframes launchRocket {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            20% {
+                transform: translateY(-100px) scale(1.1);
+            }
+            40% {
+                transform: translateY(-200px) scale(1.2);
+            }
+            60% {
+                transform: translateY(-300px) scale(1.3);
+            }
+            80% {
+                transform: translateY(-400px) scale(1.4);
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-600px) scale(0.5);
+                opacity: 0;
+            }
+        }
+
+        @keyframes rocketFire {
+            0% {
+                box-shadow: 0 0 20px #ff5722;
+                transform: translateX(-50%) scale(1);
+            }
+            50% {
+                box-shadow: 0 0 80px #ff9800, 0 0 120px #ff5722;
+                transform: translateX(-50%) scale(1.5);
+            }
+            100% {
+                box-shadow: 0 0 40px #ff9800;
+                transform: translateX(-50%) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulseText {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.7;
+                transform: scale(1.1);
+            }
+        }
+
+        /* Countdown Animation */
+        .countdown {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 4rem;
+            color: #00ff9d;
+            font-weight: bold;
+            text-shadow: 0 0 30px #00ff9d;
+            animation: countdownPop 1s ease-in-out;
+        }
+
+        @keyframes countdownPop {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+            70% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Success Message */
+        .success-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #00ff9d;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 0 30px #00ff9d;
+            opacity: 0;
+            animation: successMessage 2s ease-in-out 3s forwards;
+        }
+
+        @keyframes successMessage {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        /* Black Hole Delete Animation */
+        .black-hole-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(20px);
+        }
+
+        .black-hole-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .black-hole {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at center, #000000 0%, #1a1a1a 30%, #333333 100%);
+            border-radius: 50%;
+            position: relative;
+            animation: blackHoleSpin 4s linear infinite;
+            box-shadow:
+                    0 0 0 10px rgba(139, 0, 139, 0.5),
+                    0 0 0 20px rgba(75, 0, 130, 0.4),
+                    0 0 0 30px rgba(0, 0, 139, 0.3),
+                    0 0 80px 40px rgba(75, 0, 130, 0.6);
+        }
+
+        .black-hole::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120%;
+            height: 120%;
+            background: conic-gradient(from 0deg,
+            transparent,
+            rgba(255, 0, 255, 0.8),
+            transparent,
+            rgba(0, 255, 255, 0.8),
+            transparent);
+            border-radius: 50%;
+            animation: accretionDisk 3s linear infinite;
+            filter: blur(10px);
+        }
+
+        .data-particle {
+            position: absolute;
+            background: linear-gradient(45deg, #00ff9d, #00d4ff);
+            border-radius: 50%;
+            animation: dataIntoBlackHole 3s ease-in forwards;
+        }
+
+        .delete-text {
+            color: white;
+            font-size: 2rem;
+            font-weight: bold;
+            margin-top: 2rem;
+            text-align: center;
+            text-shadow: 0 0 20px #ff00ff;
+            animation: pulseText 1.5s infinite;
+        }
+
+        .deletion-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #ff00ff;
+            font-size: 2.5rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 0 30px #ff00ff;
+            opacity: 0;
+            animation: deletionMessage 2s ease-in-out 3s forwards;
+        }
+
+        @keyframes blackHoleSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes accretionDisk {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        @keyframes dataIntoBlackHole {
+            0% {
+                transform: translate(var(--startX), var(--startY)) scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(0, 0) scale(0.5);
+                opacity: 0.7;
+            }
+            100% {
+                transform: translate(0, 0) scale(0);
+                opacity: 0;
+            }
+        }
+
+        @keyframes deletionMessage {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--aurora-green),
+            var(--aurora-blue),
+            var(--stardust-pink),
+            transparent);
+            box-shadow: var(--neon-glow) var(--aurora-blue);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo-icon {
+            width: 70px;
+            height: 70px;
+            background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-blue), var(--stardust-pink));
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: float 8s ease-in-out infinite;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            inset: -3px;
+            background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-blue), var(--stardust-pink));
+            border-radius: 23px;
+            filter: blur(15px);
+            opacity: 0.7;
+            z-index: -1;
+        }
+
+        .logo-icon i {
+            font-size: 2rem;
+            color: white;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5));
+        }
+
+        .logo-text {
+            font-size: 2.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--aurora-green), var(--aurora-blue), var(--stardust-pink));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .user-greeting {
+            font-size: 1.2rem;
+            color: var(--crystal-white);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .username {
+            font-weight: 700;
+            color: var(--aurora-green);
+            text-shadow: 0 0 15px var(--aurora-green);
+        }
+
+        .logout-btn {
+            background: rgba(236, 72, 153, 0.15);
+            color: var(--stardust-pink);
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            border-radius: 15px;
+            padding: 0.8rem 1.8rem;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover::before {
+            left: 100%;
+        }
+
+        .logout-btn:hover {
+            background: rgba(236, 72, 153, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.4);
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            background: linear-gradient(135deg, var(--aurora-green), var(--aurora-blue), var(--cosmic-purple));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 40px rgba(0, 212, 255, 0.4);
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 0;
+            width: 200px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--aurora-green), transparent);
+            border-radius: 2px;
+            box-shadow: 0 0 20px var(--aurora-green);
+        }
+
+        .page-title i {
+            font-size: 3.5rem;
+            filter: drop-shadow(0 0 15px var(--aurora-blue));
+        }
+
+        /* Alert Message */
+        .alert-message {
+            background: rgba(236, 72, 153, 0.15);
+            border: 1px solid rgba(236, 72, 153, 0.4);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            animation: slideIn 0.6s ease;
+            backdrop-filter: blur(15px);
+            box-shadow: 0 0 30px rgba(236, 72, 153, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .alert-message::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .alert-message i {
+            color: var(--stardust-pink);
+            font-size: 1.5rem;
+            filter: drop-shadow(0 0 10px var(--stardust-pink));
+        }
+
+        /* Action Bar */
+        .action-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1.2rem 2.5rem;
+            border-radius: 15px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1.1rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-blue));
+            color: white;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.6);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--crystal-white);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border: 1px solid var(--glass-border);
+            box-shadow:
+                    0 15px 35px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--aurora-green),
+            var(--aurora-blue),
+            transparent);
+        }
+
+        .form-title {
+            font-size: 2.2rem;
+            margin-bottom: 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            color: var(--aurora-blue);
+            text-shadow: 0 0 20px var(--aurora-blue);
+        }
+
+        .form-title i {
+            font-size: 1.8rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--crystal-white);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .form-input, .form-select {
+            background: rgba(15, 15, 35, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 1.2rem 1.5rem;
+            color: var(--crystal-white);
+            font-size: 1.1rem;
+            transition: var(--transition);
+            font-family: inherit;
+            backdrop-filter: blur(10px);
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--aurora-blue);
+            box-shadow:
+                    0 0 0 3px rgba(0, 212, 255, 0.3),
+                    0 0 30px rgba(0, 212, 255, 0.2);
+            background: rgba(15, 15, 35, 0.8);
+        }
+
+        .form-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .error-message {
+            color: var(--stardust-pink);
+            font-size: 0.95rem;
+            margin-top: 8px;
+            text-shadow: 0 0 10px rgba(236, 72, 153, 0.5);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1.5rem;
+            margin-top: 2.5rem;
+            grid-column: 1 / -1;
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            border-radius: 25px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow:
+                    0 15px 35px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            margin-bottom: 3rem;
+        }
+
+        .table-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--aurora-green),
+            var(--aurora-blue),
+            transparent);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table thead {
+            background: rgba(30, 27, 46, 0.8);
+        }
+
+        .table th {
+            padding: 1.8rem;
+            text-align: left;
+            font-weight: 700;
+            color: var(--aurora-blue);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            border-bottom: 1px solid var(--glass-border);
+            text-shadow: 0 0 15px var(--aurora-blue);
+        }
+
+        .table td {
+            padding: 1.8rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateY(-2px);
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .gpa-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .gpa-high {
+            background: linear-gradient(135deg, var(--galaxy-teal), var(--aurora-green));
+            color: var(--black-hole);
+            box-shadow: 0 0 20px rgba(6, 214, 160, 0.5);
+        }
+
+        .gpa-medium {
+            background: linear-gradient(135deg, var(--supernova-orange), #FFB74D);
+            color: var(--black-hole);
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+        }
+
+        .gpa-low {
+            background: linear-gradient(135deg, var(--stardust-pink), #F48FB1);
+            color: var(--black-hole);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.5);
+        }
+
+        .action-buttons-cell {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: var(--transition);
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .edit-btn {
+            background: rgba(0, 212, 255, 0.15);
+            color: var(--aurora-blue);
+            border: 1px solid rgba(0, 212, 255, 0.4);
+        }
+
+        .edit-btn:hover {
+            background: rgba(0, 212, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 212, 255, 0.4);
+        }
+
+        .delete-btn {
+            background: rgba(236, 72, 153, 0.15);
+            color: var(--stardust-pink);
+            border: 1px solid rgba(236, 72, 153, 0.4);
+        }
+
+        .delete-btn:hover {
+            background: rgba(236, 72, 153, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(236, 72, 153, 0.4);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 4rem;
+            color: var(--crystal-white);
+        }
+
+        .no-data i {
+            font-size: 4rem;
+            margin-bottom: 2rem;
+            opacity: 0.5;
+            filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            margin-top: 2.5rem;
+        }
+
+        .pagination-controls {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .pagination-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 1rem 1.8rem;
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--crystal-white);
+            border-radius: 12px;
+            text-decoration: none;
+            transition: var(--transition);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
+        }
+
+        .pagination-btn:hover:not(.disabled) {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);
+        }
+
+        .pagination-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .pagination-pages {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
+        .page-link {
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            text-decoration: none;
+            color: var(--crystal-white);
+            transition: var(--transition);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid transparent;
+        }
+
+        .page-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--glass-border);
+        }
+
+        .page-link.active {
+            background: linear-gradient(135deg, var(--cosmic-purple), var(--nebula-blue));
+            color: white;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .pagination-info {
+            color: var(--crystal-white);
+            font-size: 1rem;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes cosmicRipple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .container {
+                padding: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 3rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2rem;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .page-title {
+                font-size: 2.5rem;
+            }
+
+            .table-container {
+                border-radius: 20px;
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 1000px;
+            }
+
+            .pagination {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-container {
+                padding: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- Animated Cosmic Background -->
+<div class="cosmic-background">
+    <div class="aurora"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="shooting-star"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+</div>
+
+<!-- Rocket Launch Overlay -->
+<div class="rocket-launch-overlay" id="rocketLaunch">
+    <div class="rocket-container">
+        <div class="countdown" id="countdown">3</div>
+        <div class="rocket">
+            <div class="rocket-window"></div>
+            <div class="rocket-fins">
+                <div class="fin left"></div>
+                <div class="fin right"></div>
+            </div>
+        </div>
+        <div class="launch-text">Đang phóng tên lửa...</div>
+        <div class="success-message" id="successMessage">
+            <i class="fas fa-check-circle"></i><br>
+            Thành công!<br>
+            <span style="font-size: 1.5rem;">Dữ liệu đã bay vào vũ trụ</span>
+        </div>
+    </div>
+    <div class="stars-container" id="starsContainer"></div>
+</div>
+
+<!-- Black Hole Delete Overlay -->
+<div class="black-hole-overlay" id="blackHoleOverlay">
+    <div class="black-hole-container">
+        <div class="black-hole" id="blackHole"></div>
+        <div class="delete-text">Đang xóa dữ liệu...</div>
+        <div class="deletion-message" id="deletionMessage">
+            <i class="fas fa-black-hole"></i><br>
+            Đã xóa!<br>
+            <span style="font-size: 1.5rem;">Dữ liệu đã bị hố đen nuốt chửng</span>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-stars"></i>
+            </div>
+            <div class="logo-text">STELLAR ACADEMY</div>
+        </div>
+        <div class="user-info">
+            <div class="user-greeting">
+                Xin chào, <span class="username" th:text="${username}">user</span>
+            </div>
+            <a href="/logout" class="logout-btn">
+                <i class="fas fa-rocket"></i>
+                Cosmic Exit
+            </a>
+        </div>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">
+        <i class="fas fa-galaxy"></i>
+        Quản lý Sinh viên
+    </h1>
+
+    <!-- Alert Message -->
+    <div th:if="${message}" class="alert-message">
+        <i class="fas fa-meteor"></i>
+        <span th:text="${message}"></span>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="action-bar">
+        <div class="action-buttons">
+            <a th:if="${userRole == 2}" th:href="@{|/studentManagement?action=add|}" class="btn btn-primary">
+                <i class="fas fa-star-and-crescent"></i>
+                Thêm Sinh viên Mới
+            </a>
+            <a th:if="${userRole == 1}" th:href="@{|/department|}" class="btn btn-secondary">
+                <i class="fas fa-satellite"></i>
+                Quản lý Khoa
+            </a>
+        </div>
+    </div>
+
+    <!-- Student Form -->
+    <div th:if="${userRole == 2}">
+        <div class="form-container">
+            <h2 class="form-title">
+                <i class="fas" th:class="${student.id == 0} ? 'fa-user-astronaut' : 'fa-user-alien'"></i>
+                <span th:text="${student.id == 0} ? 'Thêm Sinh viên Mới' : 'Cập nhật Sinh viên'"></span>
+            </h2>
+            <form th:action="@{/students/save}" th:object="${student}" method="post" id="studentForm" onsubmit="return launchRocketAnimation()">
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Mã SV:</label>
+                        <input type="text" th:field="*{studentId}" class="form-input" placeholder="Nhập mã sinh viên..." required/>
+                        <span th:if="${#fields.hasErrors('studentId')}" th:errors="*{studentId}" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Họ tên:</label>
+                        <input type="text" th:field="*{name}" class="form-input" placeholder="Nhập họ tên..." required/>
+                        <span th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">GPA:</label>
+                        <input type="number" th:field="*{gpa}" step="0.01" min="0" max="10" class="form-input" placeholder="0.00 - 10.00" required/>
+                        <span th:if="${#fields.hasErrors('gpa')}" th:errors="*{gpa}" class="error-message"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Khoa:</label>
+                        <select name="departmentId" class="form-select" required>
+                            <option value="" disabled th:selected="${student.department == null}">-- Chọn khoa --</option>
+                            <option th:each="d : ${departments}" th:value="${d.id}"
+                                    th:text="${d.departmentName}"
+                                    th:selected="${student.department != null && student.department.id == d.id}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">
+                            <i class="fas" th:class="${student.id == 0} ? 'fa-rocket' : 'fa-sync-alt'"></i>
+                            <span th:text="${student.id == 0} ? 'Phóng Tên lửa' : 'Cập nhật Vũ trụ'"></span>
+                        </button>
+                        <a th:if="${userRole == 1}" href="/department" class="btn btn-secondary">
+                            <i class="fas fa-orbit"></i>
+                            Hệ Mặt trời
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Students Table -->
+    <div class="table-container">
+        <table class="table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Mã SV</th>
+                <th>Họ tên</th>
+                <th>GPA</th>
+                <th>Khoa</th>
+                <th>Người tạo</th>
+                <th>Ngày tạo</th>
+                <th>Cập nhật</th>
+                <th>Thao tác</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="s : ${students.content}">
+                <td th:text="${s.id}">1</td>
+                <td th:text="${s.studentId}">SV001</td>
+                <td th:text="${s.name}">Tên</td>
+                <td>
+                        <span th:classappend="${s.gpa >= 8 ? 'gpa-badge gpa-high'
+                                      : (s.gpa >= 6.5 ? 'gpa-badge gpa-medium' : 'gpa-badge gpa-low')}"
+                              th:text="${s.gpa}">8.50</span>
+                </td>
+                <td th:text="${s.department != null ? s.department.departmentName : ''}">CNTT</td>
+                <td th:text="${s.createdBy}">user</td>
+                <td th:text="${#temporals.format(s.createdAt, 'yyyy-MM-dd')}">2024-01-01</td>
+                <td th:text="${#temporals.format(s.updatedAt, 'yyyy-MM-dd')}">2024-01-01</td>
+                <td>
+                    <div class="action-buttons-cell">
+                        <a th:if="${userRole == 2}" th:href="@{|/studentManagement?editId=${s.id}|}" class="action-btn edit-btn">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form th:if="${userRole == 2}" th:action="@{|/students/delete/${s.id}|}" method="post" style="display:inline"
+                              onsubmit="return showBlackHoleAnimation(this)">
+                            <button type="submit" class="action-btn delete-btn">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${#lists.isEmpty(students.content)}">
+                <td colspan="9" class="no-data">
+                    <i class="fas fa-black-hole"></i>
+                    <div>Chưa có dữ liệu trong vũ trụ</div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    <div th:if="${userRole == 2}" class="pagination">
+        <div class="pagination-controls">
+            <a th:if="${!students.first}"
+               th:href="@{|/studentManagement?page=${students.number - 1}&size=${students.size}&action=add|}"
+               class="pagination-btn">
+                <i class="fas fa-chevron-left"></i>
+                Thiên hà trước
+            </a>
+            <span th:if="${students.first}" class="pagination-btn disabled">
+                    <i class="fas fa-chevron-left"></i>
+                    Thiên hà trước
+                </span>
+
+            <div class="pagination-pages">
+                    <span th:each="i : ${#numbers.sequence(0, students.totalPages - 1)}">
+                        <a th:if="${i != students.number}"
+                           th:text="${i + 1}"
+                           th:href="@{|/studentManagement?page=${i}&size=${students.size}&action=add|}"
+                           class="page-link"></a>
+                        <span th:if="${i == students.number}" th:text="${i + 1}" class="page-link active"></span>
+                    </span>
+            </div>
+
+            <a th:if="${!students.last}"
+               th:href="@{|/studentManagement?page=${students.number + 1}&size=${students.size}&action=add|}"
+               class="pagination-btn">
+                Thiên hà sau
+                <i class="fas fa-chevron-right"></i>
+            </a>
+            <span th:if="${students.last}" class="pagination-btn disabled">
+                    Thiên hà sau
+                    <i class="fas fa-chevron-right"></i>
+                </span>
+        </div>
+
+        <div class="pagination-info">
+            Hành tinh <span th:text="${students.number + 1}">0</span> /
+            <span th:text="${students.totalPages}">0</span> |
+            Tổng Ngôi sao: <span th:text="${students.totalElements}">0</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Rocket Launch Animation Function
+    function launchRocketAnimation() {
+        // Hiển thị overlay
+        const overlay = document.getElementById('rocketLaunch');
+        overlay.style.display = 'flex';
+
+        // Tạo các ngôi sao nền
+        createLaunchStars();
+
+        // Bắt đầu countdown
+        startCountdown();
+
+        // Ngăn form submit ngay lập tức
+        setTimeout(() => {
+            document.getElementById('studentForm').submit();
+        }, 6000); // Submit sau 6 giây (sau khi animation kết thúc)
+
+        return false; // Ngăn form submit mặc định
+    }
+
+    function createLaunchStars() {
+        const starsContainer = document.getElementById('starsContainer');
+        starsContainer.innerHTML = '';
+
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'launch-star';
+            star.style.width = Math.random() * 3 + 1 + 'px';
+            star.style.height = star.style.width;
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.animationDelay = Math.random() * 2 + 's';
+            star.style.animationDuration = Math.random() * 1 + 0.5 + 's';
+            starsContainer.appendChild(star);
+        }
+    }
+
+    function startCountdown() {
+        const countdownElement = document.getElementById('countdown');
+        let count = 3;
+
+        const countdownInterval = setInterval(() => {
+            countdownElement.textContent = count;
+            countdownElement.style.animation = 'none';
+            void countdownElement.offsetWidth; // Trigger reflow
+            countdownElement.style.animation = 'countdownPop 1s ease-in-out';
+
+            if (count === 0) {
+                clearInterval(countdownInterval);
+                countdownElement.textContent = 'BÙM!';
+                setTimeout(() => {
+                    countdownElement.style.display = 'none';
+                }, 1000);
+            }
+            count--;
+        }, 1000);
+    }
+
+    // Black Hole Delete Animation Function
+    function showBlackHoleAnimation(form) {
+        // Hiển thị overlay hố đen
+        const overlay = document.getElementById('blackHoleOverlay');
+        overlay.style.display = 'flex';
+
+        // Tạo các hạt dữ liệu bay vào hố đen
+        createDataParticles();
+
+        // Ngăn form submit ngay lập tức
+        setTimeout(() => {
+            form.submit();
+        }, 5000); // Submit sau 5 giây (sau khi animation kết thúc)
+
+        return false; // Ngăn form submit mặc định
+    }
+
+    function createDataParticles() {
+        const blackHole = document.getElementById('blackHole');
+        const container = document.getElementById('blackHoleOverlay');
+
+        // Tạo nhiều hạt dữ liệu
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'data-particle';
+
+            // Kích thước ngẫu nhiên
+            const size = Math.random() * 20 + 10;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+
+            // Vị trí bắt đầu ngẫu nhiên xung quanh màn hình
+            const startX = (Math.random() - 0.5) * window.innerWidth;
+            const startY = (Math.random() - 0.5) * window.innerHeight;
+            particle.style.setProperty('--startX', startX + 'px');
+            particle.style.setProperty('--startY', startY + 'px');
+
+            // Độ trễ ngẫu nhiên
+            particle.style.animationDelay = Math.random() * 2 + 's';
+
+            container.appendChild(particle);
+
+            // Tự động xóa hạt sau khi animation kết thúc
+            setTimeout(() => {
+                if (particle.parentNode) {
+                    particle.parentNode.removeChild(particle);
+                }
+            }, 5000);
+        }
+    }
+
+    // Enhanced cosmic interactions
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add floating animation to all interactive elements
+        const interactiveElements = document.querySelectorAll('.form-container, .table-container, .btn, .stat-card');
+        interactiveElements.forEach((element, index) => {
+            element.style.animation = `slideIn 0.8s ease ${index * 0.1}s forwards`;
+            element.style.opacity = '0';
+        });
+
+        // Create additional shooting stars on click
+        document.addEventListener('click', function(e) {
+            createShootingStar(e.clientX, e.clientY);
+        });
+
+        function createShootingStar(x, y) {
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.left = (x - 50) + 'px';
+            star.style.top = y + 'px';
+            star.style.animation = 'shooting 3s linear forwards';
+            document.querySelector('.cosmic-background').appendChild(star);
+
+            setTimeout(() => {
+                star.remove();
+            }, 3000);
+        }
+
+        // Add ripple effect to buttons
+        const buttons = document.querySelectorAll('.btn, .action-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%);
+                        transform: scale(0);
+                        animation: cosmicRipple 0.6s linear;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                        pointer-events: none;
+                    `;
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Thêm hiệu ứng cho nút submit
+        const submitBtn = document.getElementById('submitBtn');
+        if (submitBtn) {
+            submitBtn.addEventListener('mouseenter', function() {
+                this.style.background = 'linear-gradient(135deg, #ff6b6b, #ffa726)';
+                this.style.boxShadow = '0 0 40px rgba(255, 107, 107, 0.8)';
+            });
+
+            submitBtn.addEventListener('mouseleave', function() {
+                this.style.background = 'linear-gradient(135deg, var(--cosmic-purple), var(--nebula-blue))';
+                this.style.boxShadow = '0 10px 30px rgba(139, 92, 246, 0.4)';
+            });
+        }
+
+        // Auto-hide animations after completion
+        const rocketOverlay = document.getElementById('rocketLaunch');
+        const blackHoleOverlay = document.getElementById('blackHoleOverlay');
+
+        if (rocketOverlay) {
+            setTimeout(() => {
+                rocketOverlay.style.display = 'none';
+            }, 8000);
+        }
+
+        if (blackHoleOverlay) {
+            setTimeout(() => {
+                blackHoleOverlay.style.display = 'none';
+            }, 7000);
+        }
+
+        // Parallax effect for background elements
+        document.addEventListener('mousemove', function(e) {
+            const moveX = (e.clientX - window.innerWidth / 2) / 50;
+            const moveY = (e.clientY - window.innerHeight / 2) / 50;
+
+            const nebula1 = document.querySelector('.nebula-1');
+            const nebula2 = document.querySelector('.nebula-2');
+
+            if (nebula1 && nebula2) {
+                nebula1.style.transform = `translate(${moveX}px, ${moveY - 40}px) rotate(180deg)`;
+                nebula2.style.transform = `translate(${-moveX}px, ${-moveY - 40}px) rotate(180deg)`;
+            }
+        });
+    });
+</script>
+</body>
+</html>

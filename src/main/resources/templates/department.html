@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org/">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quantum Department | Futuristic Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --neon-primary: #00f3ff;
+            --neon-secondary: #ff00ff;
+            --neon-accent: #00ff88;
+            --neon-danger: #ff2a6d;
+            --deep-space: #0a0a1f;
+            --cosmic-purple: #1a1a2e;
+            --stardust: #16213e;
+            --galaxy-blue: #0f3460;
+            --light-text: #e2f3f5;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --neon-glow: 0 0 10px, 0 0 20px, 0 0 30px;
+            --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', 'Segoe UI', system-ui, sans-serif;
+        }
+
+        body {
+            background:
+                    radial-gradient(circle at 20% 80%, rgba(0, 243, 255, 0.1) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.08) 0%, transparent 50%),
+                    radial-gradient(circle at 40% 40%, rgba(0, 255, 136, 0.06) 0%, transparent 50%),
+                    linear-gradient(135deg, var(--deep-space) 0%, var(--cosmic-purple) 50%, var(--stardust) 100%);
+            color: var(--light-text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background Elements */
+        .cosmic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 8s infinite;
+        }
+
+        .star:nth-child(1) { top: 10%; left: 20%; width: 2px; height: 2px; animation-delay: 0s; }
+        .star:nth-child(2) { top: 80%; left: 70%; width: 3px; height: 3px; animation-delay: 1s; }
+        .star:nth-child(3) { top: 40%; left: 40%; width: 1px; height: 1px; animation-delay: 2s; }
+        .star:nth-child(4) { top: 60%; left: 10%; width: 2px; height: 2px; animation-delay: 3s; }
+        .star:nth-child(5) { top: 20%; left: 80%; width: 3px; height: 3px; animation-delay: 4s; }
+
+        .nebula {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(40px);
+            opacity: 0.3;
+        }
+
+        .nebula-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            right: -100px;
+            background: var(--neon-primary);
+        }
+
+        .nebula-2 {
+            width: 400px;
+            height: 400px;
+            bottom: -150px;
+            left: -150px;
+            background: var(--neon-secondary);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; }
+            50% { opacity: 1; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Styles */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--glass-border);
+            position: relative;
+        }
+
+        .header::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--neon-primary),
+            var(--neon-secondary),
+            transparent);
+            box-shadow: var(--neon-glow) var(--neon-primary);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .logo-icon::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-secondary));
+            border-radius: 14px;
+            filter: blur(10px);
+            opacity: 0.7;
+            z-index: -1;
+        }
+
+        .logo-icon i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .user-greeting {
+            font-size: 1.1rem;
+            color: var(--light-text);
+        }
+
+        .username {
+            font-weight: 600;
+            color: var(--neon-accent);
+            text-shadow: 0 0 10px var(--neon-accent);
+        }
+
+        .logout-btn {
+            background: rgba(255, 42, 109, 0.1);
+            color: var(--neon-danger);
+            border: 1px solid rgba(255, 42, 109, 0.3);
+            border-radius: 10px;
+            padding: 0.7rem 1.5rem;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logout-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .logout-btn:hover::before {
+            left: 100%;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 42, 109, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 42, 109, 0.4);
+        }
+
+        /* Page Title */
+        .page-title {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+            position: relative;
+        }
+
+        .page-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-primary), transparent);
+            border-radius: 2px;
+        }
+
+        .page-title i {
+            font-size: 2.5rem;
+            filter: drop-shadow(0 0 10px var(--neon-primary));
+        }
+
+        /* Alert Message */
+        .alert-message {
+            background: rgba(255, 42, 109, 0.1);
+            border: 1px solid rgba(255, 42, 109, 0.3);
+            border-radius: 15px;
+            padding: 1.2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.5s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(255, 42, 109, 0.2);
+        }
+
+        .alert-message i {
+            color: var(--neon-danger);
+            font-size: 1.3rem;
+            filter: drop-shadow(0 0 8px var(--neon-danger));
+        }
+
+        /* Main Content Layout */
+        .content-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 1100px) {
+            .content-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-effect);
+            border-radius: 20px;
+            padding: 2.5rem;
+            border: 1px solid var(--glass-border);
+            box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--neon-primary),
+            var(--neon-secondary),
+            transparent);
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: var(--neon-primary);
+            text-shadow: 0 0 15px var(--neon-primary);
+        }
+
+        .form-title i {
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 1.8rem;
+        }
+
+        .form-label {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--light-text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-input {
+            background: rgba(10, 10, 31, 0.6);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 1.2rem;
+            color: var(--light-text);
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--neon-primary);
+            box-shadow:
+                    0 0 0 2px rgba(0, 243, 255, 0.2),
+                    0 0 20px rgba(0, 243, 255, 0.3);
+            background: rgba(10, 10, 31, 0.8);
+        }
+
+        .form-input::placeholder {
+            color: rgba(226, 243, 245, 0.5);
+        }
+
+        .error-message {
+            color: var(--neon-danger);
+            font-size: 0.9rem;
+            margin-top: 5px;
+            text-shadow: 0 0 8px rgba(255, 42, 109, 0.5);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1.2rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: inherit;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-accent));
+            color: var(--deep-space);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--light-text);
+            border: 1px solid var(--glass-border);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-3px);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Table Styles */
+        .table-container {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-effect);
+            border-radius: 20px;
+            overflow: hidden;
+            border: 1px solid var(--glass-border);
+            box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .table-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--neon-secondary),
+            var(--neon-primary),
+            transparent);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table thead {
+            background: rgba(26, 26, 46, 0.8);
+        }
+
+        .table th {
+            padding: 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--neon-primary);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .table td {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table tbody tr {
+            transition: var(--transition);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .department-name {
+            font-weight: 600;
+            color: var(--light-text);
+            font-size: 1.1rem;
+        }
+
+        .action-buttons-cell {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition);
+        }
+
+        .action-btn:hover::before {
+            left: 100%;
+        }
+
+        .edit-btn {
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-primary);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .edit-btn:hover {
+            background: rgba(0, 243, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+        }
+
+        .delete-btn {
+            background: rgba(255, 42, 109, 0.1);
+            color: var(--neon-danger);
+            border: 1px solid rgba(255, 42, 109, 0.3);
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 42, 109, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 0 15px rgba(255, 42, 109, 0.4);
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--gray);
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Department Stats */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: var(--glass-bg);
+            backdrop-filter: var(--glass-effect);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg,
+            transparent,
+            var(--neon-accent),
+            transparent);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                    0 15px 30px rgba(0, 0, 0, 0.4),
+                    0 0 20px rgba(0, 255, 136, 0.2);
+        }
+
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-accent));
+            position: relative;
+        }
+
+        .stat-icon::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-accent));
+            border-radius: 50%;
+            filter: blur(10px);
+            opacity: 0.5;
+            z-index: -1;
+        }
+
+        .stat-icon i {
+            color: var(--deep-space);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(135deg, var(--neon-primary), var(--neon-accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .stat-label {
+            color: var(--light-text);
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Animations */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 5px var(--neon-primary); }
+            50% { box-shadow: 0 0 20px var(--neon-primary), 0 0 30px var(--neon-primary); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 1.5rem;
+                text-align: center;
+            }
+
+            .page-title {
+                font-size: 2.2rem;
+                justify-content: center;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .table-container {
+                border-radius: 15px;
+                overflow-x: auto;
+            }
+
+            .table {
+                min-width: 600px;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<!-- Animated Background -->
+<div class="cosmic-bg">
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="star"></div>
+    <div class="nebula nebula-1"></div>
+    <div class="nebula nebula-2"></div>
+</div>
+
+<div class="container">
+    <!-- Header -->
+    <div class="header">
+        <div class="logo">
+            <div class="logo-icon">
+                <i class="fas fa-atom"></i>
+            </div>
+            <div class="logo-text">QUANTUM DEPT</div>
+        </div>
+        <div class="user-info">
+            <div class="user-greeting">
+                Xin chào, <span class="username" th:text="${username}">user</span>
+            </div>
+            <a href="/logout" class="logout-btn">
+                <i class="fas fa-rocket"></i>
+                Quantum Exit
+            </a>
+        </div>
+    </div>
+
+    <!-- Page Title -->
+    <h1 class="page-title">
+        <i class="fas fa-network-wired"></i>
+        Quản lý Khoa
+    </h1>
+
+    <!-- Alert Message -->
+    <div th:if="${message}" class="alert-message">
+        <i class="fas fa-exclamation-triangle"></i>
+        <span th:text="${message}"></span>
+    </div>
+
+    <!-- Department Stats -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon">
+                <i class="fas fa-sitemap"></i>
+            </div>
+            <div class="stat-value" th:text="${departments != null ? departments.size() : 0}">0</div>
+            <div class="stat-label">Tổng số Khoa</div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content-layout">
+        <!-- Department Form -->
+        <div class="form-container">
+            <h2 class="form-title">
+                <i class="fas" th:class="${department.id == 0} ? 'fa-plus-circle' : 'fa-edit'"></i>
+                <span th:text="${department.id == 0} ? 'Thêm Khoa Mới' : 'Cập nhật Khoa'"></span>
+            </h2>
+            <form th:action="@{/department/save}" th:object="${department}" method="post">
+                <input type="hidden" th:field="*{id}"/>
+
+                <div class="form-group">
+                    <label class="form-label">Tên Khoa:</label>
+                    <input type="text" th:field="*{departmentName}" class="form-input" placeholder="Nhập tên khoa..." required/>
+                    <span th:if="${#fields.hasErrors('departmentName')}" th:errors="*{departmentName}" class="error-message"></span>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas" th:class="${department.id == 0} ? 'fa-bolt' : 'fa-sync-alt'"></i>
+                        <span th:text="${department.id == 0} ? 'Kích hoạt' : 'Cập nhật'"></span>
+                    </button>
+                    <a href="/studentManagement" class="btn btn-secondary">
+                        <i class="fas fa-arrow-left"></i>
+                        Quay lại Quản lý Sinh viên
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Departments Table -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Tên Khoa</th>
+                    <th>Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="dept : ${departments}">
+                    <td th:text="${dept.id}"></td>
+                    <td class="department-name" th:text="${dept.departmentName}"></td>
+                    <td>
+                        <div class="action-buttons-cell">
+                            <a th:href="@{|/department?editId=${dept.id}|}" class="action-btn edit-btn">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form th:action="@{|/department/delete/${dept.id}|}" method="post" style="display:inline"
+                                  onsubmit="return confirm('Xác nhận xoá khoa này?');">
+                                <button type="submit" class="action-btn delete-btn">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(departments)}">
+                    <td colspan="3" class="no-data">
+                        <i class="fas fa-universe"></i>
+                        <div>Chưa có dữ liệu khoa</div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Enhanced interactive effects
+    document.addEventListener('DOMContentLoaded', function() {
+        // Add floating animation to cards
+        const cards = document.querySelectorAll('.stat-card, .form-container, .table-container');
+        cards.forEach((card, index) => {
+            card.style.animation = `slideIn 0.6s ease ${index * 0.1}s forwards`;
+            card.style.opacity = '0';
+        });
+
+        // Input focus effects
+        const inputs = document.querySelectorAll('.form-input');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Add ripple effect to buttons
+        const buttons = document.querySelectorAll('.btn, .action-btn');
+        buttons.forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.cssText = `
+                        position: absolute;
+                        border-radius: 50%;
+                        background: rgba(255, 255, 255, 0.6);
+                        transform: scale(0);
+                        animation: ripple 0.6s linear;
+                        width: ${size}px;
+                        height: ${size}px;
+                        left: ${x}px;
+                        top: ${y}px;
+                    `;
+
+                this.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+
+        // Create CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+                @keyframes ripple {
+                    to {
+                        transform: scale(4);
+                        opacity: 0;
+                    }
+                }
+            `;
+        document.head.appendChild(style);
+    });
+</script>
+</body>
+</html>
