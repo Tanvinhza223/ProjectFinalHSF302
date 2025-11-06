@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  # MySQL Database Service
+  mysql-db:
+    image: mysql:8.0
+    container_name: hsf302-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: concop17@A
+      MYSQL_DATABASE: hsf302
+      MYSQL_CHARACTER_SET_SERVER: utf8mb4
+      MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
+    ports:
+      - "3307:3306"  # Đổi port host thành 3307 để tránh conflict
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - spring-network
+
+  # Spring Boot Application Service
+  spring-app:
+    image: manhletapcode/student:s12
+    container_name: hsf302-app
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      # Override database connection để trỏ đến MySQL container
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql-db:3306/hsf302?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: concop17@A
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      SPRING_JPA_PROPERTIES_HIBERNATE_FORMAT_SQL: "true"
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.MySQL8Dialect
+    depends_on:
+      - mysql-db
+    networks:
+      - spring-network
+
+networks:
+  spring-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local

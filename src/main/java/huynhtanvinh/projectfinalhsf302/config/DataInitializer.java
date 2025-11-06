@@ -10,27 +10,61 @@ import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 
+
 @Component
 public class DataInitializer implements CommandLineRunner {
     @Autowired
     private UserAccountRepository userAccountRepository;
+    
     @Autowired
     private DepartmentRepository departmentRepository;
-
+    
     @Override
     public void run(String... args) {
         if (userAccountRepository.count() == 0) {
-            UserAccount m1 = UserAccount.builder().username("manager1").password("123456").role(1).build();
-            UserAccount m2 = UserAccount.builder().username("manager2").password("123456").role(1).build();
-            UserAccount s1 = UserAccount.builder().username("staff1").password("123456").role(2).build();
-            UserAccount g1 = UserAccount.builder().username("guest1").password("123456").role(3).build();
+            // Băm mật khẩu trước khi lưu vào database
+            String hashedPassword = PasswordUtil.hashPassword("123456");
+            
+            UserAccount m1 = UserAccount.builder()
+                    .username("manager1")
+                    .password(hashedPassword)
+                    .role(1)
+                    .build();
+            
+            UserAccount m2 = UserAccount.builder()
+                    .username("manager2")
+                    .password(hashedPassword)
+                    .role(1)
+                    .build();
+            
+            UserAccount s1 = UserAccount.builder()
+                    .username("staff1")
+                    .password(hashedPassword)
+                    .role(2)
+                    .build();
+            
+            UserAccount g1 = UserAccount.builder()
+                    .username("guest1")
+                    .password(hashedPassword)
+                    .role(3)
+                    .build();
+            
             userAccountRepository.saveAll(Arrays.asList(m1, m2, s1, g1));
         }
-
+        
         if (departmentRepository.count() == 0) {
-            Departments d1 = Departments.builder().departmentName("Computer Science").build();
-            Departments d2 = Departments.builder().departmentName("Business Administration").build();
-            Departments d3 = Departments.builder().departmentName("Design").build();
+            Departments d1 = Departments.builder()
+                    .departmentName("Computer Science")
+                    .build();
+            
+            Departments d2 = Departments.builder()
+                    .departmentName("Business Administration")
+                    .build();
+            
+            Departments d3 = Departments.builder()
+                    .departmentName("Design")
+                    .build();
+            
             departmentRepository.saveAll(Arrays.asList(d1, d2, d3));
         }
     }
