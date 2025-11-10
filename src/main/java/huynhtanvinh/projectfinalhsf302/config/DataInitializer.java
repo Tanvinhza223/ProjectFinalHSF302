@@ -23,8 +23,9 @@ public class DataInitializer implements CommandLineRunner {
             UserAccount m1 = UserAccount.builder().username("manager1").password("123456").role(1).build();
             UserAccount m2 = UserAccount.builder().username("manager2").password("123456").role(1).build();
             UserAccount s1 = UserAccount.builder().username("staff1").password("123456").role(2).build();
+            UserAccount s2 = UserAccount.builder().username("staff2").password("123456").role(2).build();
             UserAccount g1 = UserAccount.builder().username("guest1").password("123456").role(3).build();
-            userAccountRepository.saveAll(Arrays.asList(m1, m2, s1, g1));
+            userAccountRepository.saveAll(Arrays.asList(m1, m2, s1,s2, g1));
         }
 
         if (departmentRepository.count() == 0) {

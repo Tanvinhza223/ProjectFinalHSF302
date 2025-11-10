@@ -18,9 +18,10 @@ public class DepartmentController {
 
     @GetMapping("/department")
     public String departmentPage(HttpSession session, Model model,
-                                 @RequestParam(required = false) Integer editId) {
+            @RequestParam(required = false) Integer editId) {
         UserAccount user = (UserAccount) session.getAttribute("user");
-        if (user == null) return "redirect:/";
+        if (user == null)
+            return "redirect:/";
         if (user.getRole() != 1) {
             model.addAttribute("message", "You have no permission to access this function!");
             return "department";
@@ -28,7 +29,8 @@ public class DepartmentController {
         Departments dept = new Departments();
         if (editId != null) {
             dept = departmentService.getById(editId);
-            if (dept == null) dept = new Departments();
+            if (dept == null)
+                dept = new Departments();
         }
         model.addAttribute("department", dept);
         model.addAttribute("departments", departmentService.getAllDepartments());
@@ -38,11 +40,12 @@ public class DepartmentController {
 
     @PostMapping("/department/save")
     public String saveDepartment(@Valid @ModelAttribute("department") Departments department,
-                                 BindingResult bindingResult,
-                                 HttpSession session,
-                                 Model model) {
+            BindingResult bindingResult,
+            HttpSession session,
+            Model model) {
         UserAccount user = (UserAccount) session.getAttribute("user");
-        if (user == null) return "redirect:/";
+        if (user == null)
+            return "redirect:/";
         if (user.getRole() != 1) {
             model.addAttribute("message", "You have no permission to access this function!");
             model.addAttribute("departments", departmentService.getAllDepartments());
@@ -53,24 +56,32 @@ public class DepartmentController {
             model.addAttribute("username", user.getUsername());
             return "department";
         }
-       Departments departments = departmentService.getById(department.getId());
-        departments.setDepartmentName(department.getDepartmentName());
-        departmentService.saveDepartment(departments);
-        return "redirect:/department";
+
+        // Lưu và xử lý lỗi hợp lệ (ví dụ: trùng tên)
+        try {
+            departmentService.saveDepartment(department);
+            return "redirect:/department";
+        } catch (RuntimeException ex) {
+            model.addAttribute("message", ex.getMessage());
+            model.addAttribute("departments", departmentService.getAllDepartments());
+            model.addAttribute("username", user.getUsername());
+            return "department";
+        }
     }
 
     @PostMapping("/department/delete/{id}")
     public String deleteDepartment(@PathVariable("id") int id,
-                                    HttpSession session,
-                                    Model model) {
+            HttpSession session,
+            Model model) {
         UserAccount user = (UserAccount) session.getAttribute("user");
-        if (user == null) return "redirect:/";
+        if (user == null)
+            return "redirect:/";
         if (user.getRole() != 1) {
             model.addAttribute("message", "You have no permission to access this function!");
             return "department";
         }
-       Departments departments= departmentService.getById(id);
-        if(!departments.getStudents().isEmpty()){
+        Departments departments = departmentService.getById(id);
+        if (!departments.getStudents().isEmpty()) {
             model.addAttribute("message", "Cannot delete department with assigned students!");
             return "department";
         }

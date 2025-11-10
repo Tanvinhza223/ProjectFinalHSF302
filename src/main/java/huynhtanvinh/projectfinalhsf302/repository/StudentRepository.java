@@ -17,4 +17,7 @@ public interface StudentRepository extends JpaRepository<Student,Integer> {
     Page<Student> findByCreatedBy(String createdBy, Pageable pageable);
     Optional<Student> findByIdAndCreatedBy(int id, String createdBy);
     boolean existsByIdAndCreatedBy(int id, String createdBy);
+    long countByCreatedBy(String createdBy);              // Đếm số students
+    List<Student> searchByName(String name);              // Search
+    List<Student> findByDepartmentId(Integer deptId);     // Filter by dept
 }
