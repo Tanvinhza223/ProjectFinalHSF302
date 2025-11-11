@@ -1,5 +1,6 @@
 package huynhtanvinh.projectfinalhsf302.service;
 
+import huynhtanvinh.projectfinalhsf302.config.PasswordUtil;
 import huynhtanvinh.projectfinalhsf302.model.UserAccount;
 import huynhtanvinh.projectfinalhsf302.repository.UserAccountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +21,24 @@ public class UserService {
     /**
      * Kiểm tra đăng nhập với username và password
      * @param username Username
-     * @param password Password (plain text)
+     * @param plainPassword Password (plain text)
      * @return Optional<UserAccount> - có user nếu đăng nhập thành công
      */
-    public Optional<UserAccount> authenticate(String username, String password) {
+    public Optional<UserAccount> authenticate(String username, String plainPassword) {
         // Validate input
-        if (username == null || username.trim().isEmpty() ||
-                password == null || password.trim().isEmpty()) {
-            return Optional.empty();
+        // Tìm user theo username
+        Optional<UserAccount> userOptional = userAccountRepository.findByUsername(username);
+
+        if (userOptional.isPresent()) {
+            UserAccount user = userOptional.get();
+
+            // So sánh mật khẩu đã băm
+            if (PasswordUtil.verifyPassword(plainPassword, user.getPassword())) {
+                return userOptional;
+            }
         }
 
-        // Tìm user theo username và password
-        return userAccountRepository.findByUsernameAndPassword(username.trim(), password);
+        return null;
     }
 
     /**
