@@ -53,12 +53,11 @@ public class DepartmentController {
             model.addAttribute("username", user.getUsername());
             return "department";
         }
-       Departments departments = departmentService.getById(department.getId());
-        departments.setDepartmentName(department.getDepartmentName());
-        departmentService.saveDepartment(departments);
+        
+        // FIX: Trực tiếp save object từ form
+        departmentService.saveDepartment(department);
         return "redirect:/department";
     }
-
     @PostMapping("/department/delete/{id}")
     public String deleteDepartment(@PathVariable("id") int id,
                                     HttpSession session,

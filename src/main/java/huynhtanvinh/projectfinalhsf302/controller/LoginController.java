@@ -40,15 +40,13 @@ public class LoginController {
         }
         session.setAttribute("user", user);
         logger.info("Login successful: User {} (role: {}) logged in", username, user.getRole());
-        return "redirect:/studentManagement";
+        return "redirect:/product_management";
     }
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {
         UserAccount user = (UserAccount) session.getAttribute("user");
-        if (user != null) {
-            logger.info("User {} logged out", user.getUsername());
-        }
+        
         session.invalidate();
         return "redirect:/";
     }
